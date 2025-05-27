@@ -89,6 +89,8 @@ if __name__ == "__main__":
         print("No free shards found.")
         sys.exit(2)
 
+    print(f"Shard {shard_path} taken")
+
     atexit.register(_cleanup_lock)
 
     shard = pkl.load(open(shard_path, "rb"))
@@ -160,3 +162,9 @@ if __name__ == "__main__":
                 start_time = time.perf_counter()
 
     torch.save(all_embeddings, shard_path.with_suffix(".pt"))
+
+    # clean up the memory, otherwise the next run will fail
+    torch.cuda.empty_cache(); torch.cuda.ipc_collect()
+    del token_batch, mask_batch, avg_plddt, per_res_plddt
+    del out, per_tok_emb, summed, lengths, mean_emb
+    del model
