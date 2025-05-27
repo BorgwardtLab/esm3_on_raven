@@ -4,7 +4,7 @@ The dataset is split into **shards** (`*.pkl`) inside the directory referenced b
 * `main.py` creates an atomic *lock* directory `<shard>.lock` when it starts.  
 * When finished it saves the embedding tensor `<shard>.pt` and removes the lock.
 
-Because of this locking, you can launch as many independent Slurm jobs as you have GPUs—every job will pick the next free shard and you’ll never compute the same shard twice.
+Because of this locking, you can launch as many independent Slurm jobs as you have GPUs—every job will pick the next free shard and you'll never compute the same shard twice.
 
 ## Usage
 
@@ -23,7 +23,7 @@ N=10; for i in $(seq "$N"); do sbatch --export=SHARDS="/ptmp/bbana/mgnify90/1_10
 
 ## Installation guide
 
-This short guide covers environment creation, dependency installation, and model‑weight access for running **ESM‑3 small** on the MPCDF Raven GPUs. The repository provides code for generating embeddings in a distributed way for protein sequences saved across multiple shards.
+This short guide covers environment creation, dependency installation, and model-weight access for running **ESM-3 small** on the MPCDF Raven GPUs. The repository provides code for generating embeddings in a distributed way for protein sequences saved across multiple shards.
 
 ---
 
@@ -57,7 +57,7 @@ MAX_JOBS=3 CMAKE_BUILD_PARALLEL_LEVEL=3 pip install flash-attn --no-build-isolat
 
 **Download the model weights**
 
-The **ESM‑3 small** checkpoint is hosted on Hugging Face and requires a valid token.
+The **ESM-3 small** checkpoint is hosted on Hugging Face and requires a valid token.
 
 ```bash
 export HF_TOKEN=<your_token>   # set once per shell
@@ -68,5 +68,5 @@ export HF_TOKEN=<your_token>   # set once per shell
 
 **Notes**
 
-* On an NVIDIA **A100 40 GB**, the maximum safe batch size for sequences **< 1024 tokens** is **6**.
+* On an NVIDIA **A100 40 GB**, the maximum safe batch size for sequences **<1024 tokens** is **5**.
 * ⚠️ flash-attn can spawn too many compile threads, that's why it's recommended to explictly limit the number of jobs during installation - `MAX_JOBS=3 CMAKE_BUILD_PARALLEL_LEVEL=3`. If not limited, a complete stall of the system might happen. ⚠️

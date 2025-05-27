@@ -20,7 +20,7 @@ COUNT=${SHARDS_PER_JOB:-4}
 
 for ((n=0; n<COUNT; n++)); do
     echo "[$((n+1))/$COUNT] requesting a shard"
-    python -u main.py --shards-dir "$DIR"
+    python -u main.py --shards-dir "$DIR" --batch-size 5
     rc=$?
     if [[ $rc -eq 2 ]]; then
         echo "No shards left.  Exiting early."
