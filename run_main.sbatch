@@ -17,10 +17,11 @@ mamba activate esm3
 
 DIR=${SHARDS:-"/ptmp/bbana/mgnify90/1_1024"}
 COUNT=${SHARDS_PER_JOB:-4}
+BATCH_SIZE=${BATCH_SIZE:-5}
 
 for ((n=0; n<COUNT; n++)); do
     echo "[$((n+1))/$COUNT] requesting a shard"
-    python -u main.py --shards-dir "$DIR" --batch-size 5
+    python -u main.py --shards-dir "$DIR" --batch-size "$BATCH_SIZE"
     rc=$?
     if [[ $rc -eq 2 ]]; then
         echo "No shards left.  Exiting early."

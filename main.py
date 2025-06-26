@@ -63,8 +63,8 @@ if __name__ == "__main__":
         default="/ptmp/bbana/mgnify90/1_1024",
         help="Directory containing shard .pkl files",
     )
-    parser.add_argument("--batch-size", type=int, default=6)
-    parser.add_argument("--logging-interval", type=int, default=300)
+    parser.add_argument("--batch-size", type=int, default=5)
+    parser.add_argument("--logging-interval", type=int, default=1000)
     args = parser.parse_args()
 
     shards_dir = pathlib.Path(args.shards_dir)

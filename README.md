@@ -3,6 +3,7 @@
 The dataset is split into **shards** (`*.pkl`) inside the directory referenced by `$SHARDS` (default: `/ptmp/bbana/mgnify90/1_1024`). Each shard is processed **exactly once**:
 * `main.py` creates an atomic *lock* directory `<shard>.lock` when it starts.  
 * When finished it saves the embedding tensor `<shard>.pt` and removes the lock.
+* Use `$BATCH_SIZE` to adjust the batch size used by ESM3. 
 
 Because of this locking, you can launch as many independent Slurm jobs as you have GPUs—every job will pick the next free shard and you'll never compute the same shard twice.
 
@@ -12,13 +13,13 @@ Submit **`run_main.sbatch`** with the desired number of shards to process sequen
 
 ```bash
 # run up to 4 shards in a single GPU job
-sbatch --export=SHARDS="/ptmp/bbana/mgnify90/1_1024",SHARDS_PER_JOB=4 run_main.sbatch
+sbatch --export=SHARDS="/ptmp/bbana/mgnify90/1_1024",SHARDS_PER_JOB=4,BATCH_SIZE=5 run_main.sbatch
 ```
 
 Launch the same command multiple times (or turn it into an array job) to keep the queue full:
 
 ```bash
-N=10; for i in $(seq "$N"); do sbatch --export=SHARDS="/ptmp/bbana/mgnify90/1_1024",SHARDS_PER_JOB=4 run_main.sbatch; done
+N=10; for i in $(seq "$N"); do sbatch --export=SHARDS="/ptmp/bbana/mgnify90/1_1024",SHARDS_PER_JOB=4,BATCH_SIZE=5 run_main.sbatch; done
 ```
 
 ## Installation guide
