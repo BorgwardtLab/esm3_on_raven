@@ -19,8 +19,17 @@ from esm.utils import encoding
 class Mgnify90Dataset(Dataset):
 
     def __init__(self, shard):
-        self.seqs = list(shard.values())
-        self.ids = list(shard.keys())
+        if isinstance(shard, dict):
+            self.seqs = list(shard.values())
+            self.ids = list(shard.keys())
+        elif isinstance(shard, set):
+            self.seqs = list(shard)
+            self.ids = list(range(len(self.seqs)))
+        elif isinstance(shard, list):
+            self.seqs = shard
+            self.ids = list(range(len(self.seqs)))
+        else:
+            raise ValueError(f"Invalid shard type: {type(shard)}")
         self.n_seqs = len(self.seqs)
 
     def __len__(self):
@@ -58,20 +67,24 @@ def _cleanup_lock():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--shards-dir",
+        "--shards",
         type=str,
         default="/ptmp/bbana/mgnify90/1_1024",
-        help="Directory containing shard .pkl files",
+        help="Path to a single shard .pkl file or to a directory containing shard .pkl files",
     )
     parser.add_argument("--batch-size", type=int, default=5)
     parser.add_argument("--logging-interval", type=int, default=1000)
     args = parser.parse_args()
 
-    shards_dir = pathlib.Path(args.shards_dir)
+    shards_path = pathlib.Path(args.shards)
+    pkl_candidates = (
+        [shards_path] if shards_path.is_file() else sorted(shards_path.glob("*.pkl"))
+    )
 
+    print
     shard_path = None
     lock_dir = None
-    for pkl_path in sorted(shards_dir.glob("*.pkl")):
+    for pkl_path in pkl_candidates:
         if pkl_path.with_suffix(".pt").exists():
             continue                            # already done
         cand_lock = pkl_path.with_suffix(".lock")
