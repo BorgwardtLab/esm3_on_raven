@@ -1,9 +1,9 @@
 # Distributed ESM-3 embedding generation on the Raven cluster 
 
-The dataset is split into **shards** (`*.pkl`) inside the directory referenced by `$SHARDS` (default: `/ptmp/bbana/mgnify90/1_1024`). Each shard is processed **exactly once**:
+The dataset is split into **shards** (`*.pkl`) inside the directory referenced by `$SHARDS` (default: `/ptmp/bbana/mgnify90/1_1024`). If `$SHARDS` points to a single `*.pkl` file, only that shard will be processed. Each shard is processed **exactly once**:
 * `main.py` creates an atomic *lock* directory `<shard>.lock` when it starts.  
 * When finished it saves the embedding tensor `<shard>.pt` and removes the lock.
-* Use `$BATCH_SIZE` to adjust the batch size used by ESM3. 
+* Use `$BATCH_SIZE` to adjust the batch size used by ESM3.
 
 Because of this locking, you can launch as many independent Slurm jobs as you have GPUs—every job will pick the next free shard and you'll never compute the same shard twice.
 
